@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w700,
             fontSize: 22,
           ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         textTheme: TextTheme(
           bodyMedium: const TextStyle(
@@ -44,17 +45,21 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const MyHomePage(),
+      routes: {
+        '/': (context) => const CryptoCurencyList(),
+        '/coin': (context) => const CryptoCoin(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class CryptoCurencyList extends StatelessWidget {
+  const CryptoCurencyList({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const coinName = 'BNB';
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -74,9 +79,12 @@ class MyHomePage extends StatelessWidget {
                     fit: BoxFit.cover,
                     image: AssetImage('images/bitcoin_logo.png'),
                   ),
-                  title: Text('Bitcoin', style: theme.textTheme.bodyMedium),
+                  title: Text(coinName, style: theme.textTheme.bodyMedium),
                   subtitle: Text('20000\$', style: theme.textTheme.labelSmall),
                   trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/coin', arguments: coinName);
+                  },
                 );
               },
               separatorBuilder: (context, index) => const Divider(),
@@ -84,24 +92,41 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-      // appBar: AppBar(title: const Text('CryptoCurencyList'), centerTitle: true),
-      // body: ListView.separated(
-      //   itemCount: 20,
-      //   itemBuilder: (context, index) {
-      //     return ListTile(
-      //       leading: const Image(
-      //         height: 30,
-      //         width: 30,
-      //         fit: BoxFit.cover,
-      //         image: AssetImage('images/bitcoin_logo.png'),
-      //       ),
-      //       title: Text('Bitcoin', style: theme.textTheme.bodyMedium),
-      //       subtitle: Text('20000\$', style: theme.textTheme.labelSmall),
-      //       trailing: const Icon(Icons.arrow_forward_ios),
-      //     );
-      //   },
-      //   separatorBuilder: (context, index) => const Divider(),
-      // ),
+    );
+  }
+}
+
+class CryptoCoin extends StatefulWidget {
+  const CryptoCoin({super.key});
+
+  @override
+  State<CryptoCoin> createState() => _CryptoCoinState();
+}
+
+class _CryptoCoinState extends State<CryptoCoin> {
+  String? coinName;
+
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)!.settings.arguments;
+    if (args == null) {
+      print('You must provide args');
+      return;
+    }
+    if (args != String) {
+      print('You must provide String');
+      return;
+    }
+    coinName = args as String;
+    setState(() {});
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(coinName ?? '...')),
+      body: const Center(child: Text('Crypto coin')),
     );
   }
 }

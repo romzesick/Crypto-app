@@ -13,7 +13,7 @@ class CryptoCurencyList extends StatefulWidget {
 class _CryptoCurencyListState extends State<CryptoCurencyList> {
   @override
   Widget build(BuildContext context) {
-    final cryptoCoinList = context.watch<CryptoCoinsViewModel>().cryptoCoinList;
+    final model = context.watch<CryptoCoinsViewModel>();
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -22,16 +22,42 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
               title: Text('CryptoCurencyList'),
               floating: true,
             ),
-            (cryptoCoinList == null)
-                ? const SliverToBoxAdapter(child: SizedBox())
-                : SliverList.separated(
-                    itemCount: cryptoCoinList.length,
-                    itemBuilder: (context, index) {
-                      final coin = cryptoCoinList[index];
-                      return CryptoCoinTile(coin: coin);
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
+            if (model.isLoading == true)
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ),
+                ),
+              )
+            else if (model.error != null)
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text(model.error!),
+                  ),
+                ),
+              )
+            else if (model.cryptoCoinList.isEmpty)
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Нажми на кнопку, чтобы загрузить данные'),
+                  ),
+                ),
+              )
+            else
+              SliverList.separated(
+                itemCount: model.cryptoCoinList.length,
+                itemBuilder: (context, index) {
+                  final coin = model.cryptoCoinList[index];
+                  return CryptoCoinTile(coin: coin);
+                },
+                separatorBuilder: (context, index) => const Divider(),
+              ),
           ],
         ),
       ),

@@ -3,13 +3,31 @@ import 'package:crypto_app/repositories/models/crypto_model.dart';
 import 'package:flutter/material.dart';
 
 class CryptoCoinsViewModel extends ChangeNotifier {
-  final cryptoCoinsRepository = CryptoCoinsRepository();
+  final CryptoCoinsRepository cryptoCoinsRepository;
 
-  List<CryptoCoin>? _cryptoCoinList;
-  List<CryptoCoin>? get cryptoCoinList => _cryptoCoinList;
+  CryptoCoinsViewModel({required this.cryptoCoinsRepository});
+
+  List<CryptoCoin> _cryptoCoinList = [];
+  List<CryptoCoin> get cryptoCoinList => _cryptoCoinList;
+
+  String? _error;
+  String? get error => _error;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   void getCryptoCoinsList() async {
-    _cryptoCoinList = await cryptoCoinsRepository.getCryptoCoins();
-    notifyListeners();
+    try {
+      _isLoading = true;
+      _error = null;
+      final result = await cryptoCoinsRepository.getCryptoCoins();
+      _cryptoCoinList = result;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      _error = 'Couldnt upload data';
+      notifyListeners();
+    }
   }
 }

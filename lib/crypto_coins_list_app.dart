@@ -2,8 +2,8 @@ import 'package:crypto_app/router/routes.dart';
 import 'package:crypto_app/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CryptoCoinsListApp extends StatelessWidget {
+  const CryptoCoinsListApp({super.key});
 
   // This widget is the root of your application.
   @override

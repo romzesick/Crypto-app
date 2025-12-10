@@ -32,4 +32,8 @@ final theme = ThemeData(
       fontSize: 14,
     ),
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: Colors.white24,
+    foregroundColor: Colors.white,
+  ),
 );

@@ -3,5 +3,5 @@ import 'package:crypto_app/features/crypto_list/crypto_list.dart';
 
 final routes = {
   '/': (context) => const CryptoCurencyList(),
-  '/coin': (context) => const CryptoCoin(),
+  '/coin': (context) => const CryptoCoinWidget(),
 };

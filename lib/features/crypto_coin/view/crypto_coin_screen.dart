@@ -1,20 +1,24 @@
+import 'package:crypto_app/repositories/models/crypto_model.dart';
 import 'package:flutter/material.dart';
 
-class CryptoCoin extends StatefulWidget {
-  const CryptoCoin({super.key});
+class CryptoCoinWidget extends StatefulWidget {
+  const CryptoCoinWidget({super.key});
 
   @override
-  State<CryptoCoin> createState() => _CryptoCoinState();
+  State<CryptoCoinWidget> createState() => _CryptoCoinWidgetState();
 }
 
-class _CryptoCoinState extends State<CryptoCoin> {
-  String? coinName;
+class _CryptoCoinWidgetState extends State<CryptoCoinWidget> {
+  CryptoCoin? coin;
 
   @override
   void didChangeDependencies() {
     final args = ModalRoute.of(context)!.settings.arguments;
-    assert(args != null && args is String, 'You must provide String args');
-    coinName = args as String;
+    assert(
+      args != null && args is CryptoCoin,
+      'You must provide CryptoCoin args',
+    );
+    coin = args as CryptoCoin;
     setState(() {});
     super.didChangeDependencies();
   }
@@ -22,8 +26,8 @@ class _CryptoCoinState extends State<CryptoCoin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(coinName ?? '...')),
-      body: const Center(child: Text('Crypto coin')),
+      appBar: AppBar(title: Text(coin!.name)),
+      body: Center(child: Text(coin!.name)),
     );
   }
 }

@@ -1,7 +1,7 @@
+import 'package:crypto_app/features/crypto_list/crypto_coin_view_model.dart';
 import 'package:crypto_app/features/crypto_list/widgets/widgets.dart';
-import 'package:crypto_app/repositories/crypto_coin/crypto_coins_repository.dart';
-import 'package:crypto_app/repositories/models/crypto_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CryptoCurencyList extends StatefulWidget {
   const CryptoCurencyList({super.key});
@@ -11,9 +11,9 @@ class CryptoCurencyList extends StatefulWidget {
 }
 
 class _CryptoCurencyListState extends State<CryptoCurencyList> {
-  List<CryptoCoin>? _cryptoCoinList;
   @override
   Widget build(BuildContext context) {
+    final cryptoCoinList = context.watch<CryptoCoinsViewModel>().cryptoCoinList;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -22,12 +22,12 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
               title: Text('CryptoCurencyList'),
               floating: true,
             ),
-            (_cryptoCoinList == null)
+            (cryptoCoinList == null)
                 ? const SliverToBoxAdapter(child: SizedBox())
                 : SliverList.separated(
-                    itemCount: _cryptoCoinList!.length,
+                    itemCount: cryptoCoinList.length,
                     itemBuilder: (context, index) {
-                      final coin = _cryptoCoinList![index];
+                      final coin = cryptoCoinList[index];
                       return CryptoCoinTile(coin: coin);
                     },
                     separatorBuilder: (context, index) => const Divider(),
@@ -36,11 +36,8 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final cryptoCoinList = await CryptoCoinsRepository().getCryptoCoins();
-          _cryptoCoinList = cryptoCoinList;
-          setState(() {});
-        },
+        onPressed: () =>
+            context.read<CryptoCoinsViewModel>().getCryptoCoinsList(),
         child: const Icon(Icons.download),
       ),
     );

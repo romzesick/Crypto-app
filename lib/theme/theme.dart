@@ -36,4 +36,5 @@ final theme = ThemeData(
     backgroundColor: Colors.white24,
     foregroundColor: Colors.white,
   ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.white),
 );

@@ -10,11 +10,12 @@ class CryptoCoinTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
-      leading: const Image(
-        height: 30,
-        width: 30,
+      leading: Image.network(
+        coin.imageUrl,
+        height: 40,
+        width: 40,
         fit: BoxFit.cover,
-        image: AssetImage('images/bitcoin_logo.png'),
+        errorBuilder: (context, error, stack) => const Icon(Icons.error),
       ),
       title: Text(coin.name, style: theme.textTheme.bodyMedium),
       subtitle: Text('${coin.priceInUSD}\$', style: theme.textTheme.labelSmall),

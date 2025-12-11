@@ -12,6 +12,19 @@ class CryptoCurencyList extends StatefulWidget {
 
 class _CryptoCurencyListState extends State<CryptoCurencyList> {
   List<CryptoCoin>? _cryptoCoinList;
+
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
+  void _loadData() async {
+    final cryptoCoinList = await CryptoCoinsRepository().getCryptoCoins();
+    _cryptoCoinList = cryptoCoinList;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +36,9 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
               floating: true,
             ),
             (_cryptoCoinList == null)
-                ? const SliverToBoxAdapter(child: SizedBox())
+                ? const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
                 : SliverList.separated(
                     itemCount: _cryptoCoinList!.length,
                     itemBuilder: (context, index) {
@@ -34,14 +49,6 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
                   ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final cryptoCoinList = await CryptoCoinsRepository().getCryptoCoins();
-          _cryptoCoinList = cryptoCoinList;
-          setState(() {});
-        },
-        child: const Icon(Icons.download),
       ),
     );
   }

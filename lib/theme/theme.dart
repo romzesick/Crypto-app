@@ -31,6 +31,10 @@ final theme = ThemeData(
       fontWeight: FontWeight.w700,
       fontSize: 14,
     ),
+    labelMedium: const TextStyle(color: Colors.white, fontSize: 17),
+  ),
+  iconButtonTheme: const IconButtonThemeData(
+    style: ButtonStyle(iconColor: WidgetStatePropertyAll(Colors.white)),
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.white24,

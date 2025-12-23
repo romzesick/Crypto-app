@@ -4,7 +4,7 @@ const primaryColor = Color.fromARGB(255, 31, 31, 31);
 final theme = ThemeData(
   scaffoldBackgroundColor: primaryColor,
   primaryColor: primaryColor,
-  colorScheme: .fromSeed(seedColor: primaryColor),
+  colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
   dividerTheme: const DividerThemeData(color: Colors.white24),
   listTileTheme: const ListTileThemeData(iconColor: Colors.white24),
   appBarTheme: const AppBarTheme(

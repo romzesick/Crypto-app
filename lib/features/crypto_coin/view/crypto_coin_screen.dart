@@ -66,7 +66,7 @@ class _CryptoCoinWidgetState extends State<CryptoCoinWidget> {
                             child: Column(
                               children: [
                                 Image.network(
-                                  coin.imagUrl,
+                                  coin.details.fullImageUrl,
                                   width: 150,
                                   height: 150,
                                   errorBuilder: (context, error, stack) =>
@@ -83,7 +83,7 @@ class _CryptoCoinWidgetState extends State<CryptoCoinWidget> {
                                 BaseCard(
                                   child: Center(
                                     child: Text(
-                                      '${coin.priceInUSD.toStringAsFixed(2)} \$',
+                                      '${coin.details.priceInUSD.toStringAsFixed(2)} \$',
                                       style: theme.textTheme.labelMedium,
                                     ),
                                   ),
@@ -94,13 +94,13 @@ class _CryptoCoinWidgetState extends State<CryptoCoinWidget> {
                                       _DataRow(
                                         title: 'Hight 24 Hour',
                                         value:
-                                            '${coin.high24Hour.toStringAsFixed(2)} \$',
+                                            '${coin.details.high24Hour.toStringAsFixed(2)} \$',
                                       ),
                                       const SizedBox(height: 6),
                                       _DataRow(
                                         title: 'Low 24 Hour',
                                         value:
-                                            '${coin.low24Hour.toStringAsFixed(2)} \$',
+                                            '${coin.details.low24Hour.toStringAsFixed(2)} \$',
                                       ),
                                     ],
                                   ),

@@ -6,6 +6,7 @@ import 'package:crypto_app/repositories/crypto_coins/crypto_coins.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class CryptoCurencyList extends StatefulWidget {
   const CryptoCurencyList({super.key});
@@ -40,8 +41,22 @@ class _CryptoCurencyListState extends State<CryptoCurencyList> {
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
-                  const SliverAppBar(
-                    title: Text('CryptoCurencyList'),
+                  SliverAppBar(
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TalkerScreen(talker: GetIt.I.get<Talker>()),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.document_scanner_outlined),
+                      ),
+                    ],
+                    title: const Text('CryptoCurencyList'),
                     floating: true,
                   ),
                   BlocBuilder<CryptoListBloc, CryptoListBlocState>(

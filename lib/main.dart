@@ -1,107 +1,71 @@
+import 'dart:async';
+import 'dart:ui';
+
+import 'package:crypto_app/crypto_coins_list_app.dart';
+import 'package:crypto_app/firebase_options.dart';
+import 'package:crypto_app/repositories/crypto_coins/crypto_coins.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:hive_ce_flutter/adapters.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 void main() {
-  runApp(const MyApp());
-}
+  final talker = TalkerFlutter.init();
+  GetIt.I.registerSingleton<Talker>(talker);
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  PlatformDispatcher.instance.onError = (error, stack) {
+    talker.handle(error, stack);
+    return true;
+  };
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    const primaryColor = Color.fromARGB(255, 31, 31, 31);
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        scaffoldBackgroundColor: primaryColor,
-        primaryColor: primaryColor,
-        colorScheme: .fromSeed(seedColor: primaryColor),
-        dividerTheme: const DividerThemeData(color: Colors.white24),
-        listTileTheme: const ListTileThemeData(iconColor: Colors.white24),
-        appBarTheme: const AppBarTheme(
-          centerTitle: true,
-          backgroundColor: primaryColor,
-          surfaceTintColor: Colors.transparent,
-          elevation: 2,
-          shadowColor: Colors.white24,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w700,
-            fontSize: 22,
-          ),
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      final app = await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+
+      talker.info(app.options.projectId);
+
+      await Hive.initFlutter();
+      Hive.registerAdapter(CryptoCoinDetailsAdapter());
+      Hive.registerAdapter(CryptoCoinAdapter());
+
+      const String cryptoCoinsBoxName = 'crypto_coins_box';
+
+      final cryptoCoinsBox = await Hive.openBox<CryptoCoin>(cryptoCoinsBoxName);
+
+      final dio = Dio();
+      dio.interceptors.add(
+        TalkerDioLogger(
+          talker: talker,
+          settings: const TalkerDioLoggerSettings(printResponseData: false),
         ),
-        textTheme: TextTheme(
-          bodyMedium: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-            fontSize: 20,
-          ),
-          labelSmall: TextStyle(
-            color: Colors.white.withOpacity(0.6),
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-          ),
-        ),
-      ),
-      home: const MyHomePage(),
-    );
-  }
-}
+      );
+      Bloc.observer = TalkerBlocObserver(
+        talker: talker,
+        settings: const TalkerBlocLoggerSettings(printStateFullData: false),
+      );
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+      GetIt.I.registerLazySingleton<AbstractCryptoCoinsRepository>(
+        () => CryptoCoinsRepository(dio: dio, cryptoCoinsBox: cryptoCoinsBox),
+      );
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            const SliverAppBar(
-              title: Text('CryptoCurencyList'),
-              centerTitle: true,
-              floating: true,
-            ),
-            SliverList.separated(
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Image(
-                    height: 30,
-                    width: 30,
-                    fit: BoxFit.cover,
-                    image: AssetImage('images/bitcoin_logo.png'),
-                  ),
-                  title: Text('Bitcoin', style: theme.textTheme.bodyMedium),
-                  subtitle: Text('20000\$', style: theme.textTheme.labelSmall),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                );
-              },
-              separatorBuilder: (context, index) => const Divider(),
-            ),
-          ],
-        ),
-      ),
-      // appBar: AppBar(title: const Text('CryptoCurencyList'), centerTitle: true),
-      // body: ListView.separated(
-      //   itemCount: 20,
-      //   itemBuilder: (context, index) {
-      //     return ListTile(
-      //       leading: const Image(
-      //         height: 30,
-      //         width: 30,
-      //         fit: BoxFit.cover,
-      //         image: AssetImage('images/bitcoin_logo.png'),
-      //       ),
-      //       title: Text('Bitcoin', style: theme.textTheme.bodyMedium),
-      //       subtitle: Text('20000\$', style: theme.textTheme.labelSmall),
-      //       trailing: const Icon(Icons.arrow_forward_ios),
-      //     );
-      //   },
-      //   separatorBuilder: (context, index) => const Divider(),
-      // ),
-    );
-  }
+      FlutterError.onError = (details) =>
+          talker.handle(details.exception, details.stack);
+
+      runApp(const CryptoCoinsListApp());
+    },
+    (e, st) {
+      talker.handle(e, st);
+    },
+  );
 }

@@ -1,7 +1,7 @@
 import 'package:crypto_app/repositories/crypto_coins/crypto_coins.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class CryptoCoinsRepository implements AbstractCryptoCoinsRepository {

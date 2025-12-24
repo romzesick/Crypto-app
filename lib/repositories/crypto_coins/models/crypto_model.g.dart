@@ -8,7 +8,7 @@ part of 'crypto_model.dart';
 
 class CryptoCoinAdapter extends TypeAdapter<CryptoCoin> {
   @override
-  final int typeId = 2;
+  final typeId = 2;
 
   @override
   CryptoCoin read(BinaryReader reader) {
@@ -48,13 +48,9 @@ class CryptoCoinAdapter extends TypeAdapter<CryptoCoin> {
 // **************************************************************************
 
 CryptoCoin _$CryptoCoinFromJson(Map<String, dynamic> json) => CryptoCoin(
-      name: json['name'] as String,
-      details:
-          CryptoCoinDetails.fromJson(json['details'] as Map<String, dynamic>),
-    );
+  name: json['name'] as String,
+  details: CryptoCoinDetails.fromJson(json['details'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$CryptoCoinToJson(CryptoCoin instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'details': instance.details,
-    };
+    <String, dynamic>{'name': instance.name, 'details': instance.details};

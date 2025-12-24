@@ -4,17 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
-class CryptoCoinsListApp extends StatelessWidget {
+class CryptoCoinsListApp extends StatefulWidget {
   const CryptoCoinsListApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<CryptoCoinsListApp> createState() => _CryptoCoinsListAppState();
+}
+
+class _CryptoCoinsListAppState extends State<CryptoCoinsListApp> {
+  final _appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: theme,
-      routes: routes,
-      navigatorObservers: [TalkerRouteObserver(GetIt.I.get<Talker>())],
+      routerConfig: _appRouter.config(
+        navigatorObservers: () => [TalkerRouteObserver(GetIt.I.get<Talker>())],
+      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'crypto_coin_details_model.g.dart';
